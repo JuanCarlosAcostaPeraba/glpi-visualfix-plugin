@@ -1,0 +1,41 @@
+/* Visual Fixes for GLPI 11 Kanban View */
+
+/* 
+   Goal: 
+   - Small "Global" select (kanban-board-switcher)
+   - Large/Expanding search input (.search-input)
+*/
+
+.kanban-toolbar {
+    display: flex !important;
+    align-items: center !important;
+    flex-direction: row !important;
+    /* Force row on desktop if bootstrap tries to stack it */
+    gap: 10px !important;
+}
+
+/* The switcher select */
+.kanban-toolbar select[name="kanban-board-switcher"] {
+    flex: 0 0 auto !important;
+    width: 150px !important;
+    /* Approximately the size to show "Global" comfortably */
+    min-width: 100px !important;
+}
+
+/* The search input container that should expand */
+.kanban-toolbar .search-input {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    /* Allow it to shrink if needed, but flex-grow will pull it */
+}
+
+/* Ensure the input inside handles width correctly */
+.kanban-toolbar .search-input .search-input-tag-input {
+    width: 100% !important;
+}
+
+/* The "Add column" button and other actions */
+.kanban-toolbar .dropdown,
+.kanban-toolbar .btn {
+    flex: 0 0 auto !important;
+}
