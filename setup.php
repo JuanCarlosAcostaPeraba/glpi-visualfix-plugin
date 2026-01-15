@@ -7,7 +7,8 @@ use Glpi\Plugin\Hooks;
  *
  * @return void
  */
-function plugin_init_visualfix() {
+function plugin_init_visualfix()
+{
    global $PLUGIN_HOOKS;
 
    $PLUGIN_HOOKS['csrf_compliant']['visualfix'] = true;
@@ -23,14 +24,15 @@ function plugin_init_visualfix() {
  *
  * @return array
  */
-function plugin_version_visualfix() {
+function plugin_version_visualfix()
+{
    return [
-      'name'           => 'Visual Fix',
-      'version'        => '1.0.0',
-      'author'         => 'Juan Carlos Acosta Peraba',
-      'license'        => 'GPLv2+',
-      'homepage'       => 'https://github.com/JuanCarlosAcostaPeraba/glpi-visualfix-plugin',
-      'requirements'   => [
+      'name' => 'Visual Fix',
+      'version' => '1.0.0',
+      'author' => 'Juan Carlos Acosta Peraba',
+      'license' => 'GPLv2+',
+      'homepage' => 'https://github.com/JuanCarlosAcostaPeraba/glpi-visualfix-plugin',
+      'requirements' => [
          'glpi' => [
             'min' => '11.0.0',
          ]
@@ -43,7 +45,8 @@ function plugin_version_visualfix() {
  *
  * @return boolean
  */
-function plugin_visualfix_check_prerequisites() {
+function plugin_visualfix_check_prerequisites()
+{
    return true;
 }
 
@@ -54,7 +57,8 @@ function plugin_visualfix_check_prerequisites() {
  *
  * @return boolean
  */
-function plugin_visualfix_check_config($verbose = false) {
+function plugin_visualfix_check_config($verbose = false)
+{
    if (true) { // No specific config for now
       return true;
    }
