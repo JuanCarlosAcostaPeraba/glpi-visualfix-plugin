@@ -16,6 +16,8 @@ function plugin_init_visualfix()
    if (Plugin::isPluginActive('visualfix')) {
       // Add CSS to the central interface
       $PLUGIN_HOOKS[Hooks::ADD_CSS]['visualfix'][] = 'css/visualfix.css';
+      // Register JS for icon rendering fix
+      $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['visualfix'][] = 'js/visualfix.js';
    }
 }
 
@@ -28,7 +30,7 @@ function plugin_version_visualfix()
 {
    return [
       'name' => 'Visual Fix',
-      'version' => '1.0.0',
+      'version' => '1.2.2',
       'author' => 'Juan Carlos Acosta Peraba',
       'license' => 'GPLv2+',
       'homepage' => 'https://github.com/JuanCarlosAcostaPeraba/glpi-visualfix-plugin',
