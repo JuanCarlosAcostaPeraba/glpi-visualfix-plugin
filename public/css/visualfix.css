@@ -39,3 +39,10 @@
 .kanban-toolbar .btn {
     flex: 0 0 auto !important;
 }
+
+/* Fix pagination bar overlapping filters 
+   Reduce z-index so it stays behind dropdowns and filter panels
+*/
+.search-footer {
+    z-index: 10 !important;
+}
