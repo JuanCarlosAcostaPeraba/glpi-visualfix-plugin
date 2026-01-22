@@ -46,3 +46,18 @@
 .search-footer {
     z-index: 10 !important;
 }
+
+/* Fix Flatpickr "today" collision with gantt plugin */
+.flatpickr-calendar .flatpickr-day.today {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+}
+
+.flatpickr-calendar .flatpickr-day {
+    position: relative;
+    z-index: 1;
+}
