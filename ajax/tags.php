@@ -21,68 +21,101 @@ include($abs_path);
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-// Enable error reporting for this AJAX request to catch fatals
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+// Custom error handler to catch everything and return as JSON
+function customErrorHandler($errno, $errstr, $errfile, $errline)
+{
+    if (!(error_reporting() & $errno))
+        return false;
+    header("HTTP/1.1 500 Internal Server Error");
+    echo json_encode([
+        'error_type' => 'PHP Error',
+        'message' => $errstr,
+        'file' => $errfile,
+        'line' => $errline
+    ]);
+    exit;
+}
+set_error_handler("customErrorHandler");
+
+// Custom exception handler
+set_exception_handler(function ($e) {
+    header("HTTP/1.1 500 Internal Server Error");
+    echo json_encode([
+        'error_type' => 'Exception',
+        'message' => $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => explode("\n", $e->getTraceAsString())
+    ]);
+    exit;
+});
 
 try {
+    global $DB;
+
+    if (!class_exists('Session')) {
+        throw new Exception('Class "Session" not found. Check GLPI core.');
+    }
+
     Session::checkLoginUser();
 
     if (!class_exists('PluginTagTag')) {
-        throw new Exception('Class PluginTagTag not found. Is the "tag" plugin installed and active?');
+        throw new Exception('Class "PluginTagTag" not found. Check if the "tag" plugin is active.');
     }
 
     $searchText = $_GET['searchText'] ?? '';
+    if ($searchText === 'undefined') {
+        $searchText = '';
+    }
     $page = (int) ($_GET['page'] ?? 1);
     $page_limit = 20;
 
     $tag = new PluginTagTag();
     $table = $tag->getTable();
 
-    $criteria = [
+    $where = [
+        'is_active' => 1
+    ];
+
+    if (!empty($searchText)) {
+        $where['name'] = ['LIKE', '%' . $searchText . '%'];
+    }
+
+    // Standard identification/entity restriction if applicable
+    if ($tag->isEntityAssign()) {
+        $entities_criteria = getEntitiesRestrictCriteria($table, '', '', true);
+        if (is_array($entities_criteria) && count($entities_criteria) > 0) {
+            $where[] = current($entities_criteria);
+        }
+    }
+
+    $query = [
         'SELECT' => ['id', 'name as text'],
         'FROM' => $table,
-        'WHERE' => [
-            'is_active' => 1
-        ],
+        'WHERE' => $where,
         'ORDER' => 'name ASC',
         'START' => ($page - 1) * $page_limit,
         'LIMIT' => $page_limit
     ];
 
-    if (!empty($searchText)) {
-        $criteria['WHERE']['name'] = ['LIKE', '%' . $searchText . '%'];
-    }
+    $iterator = $DB->request($query);
 
-    $iterator = $DB->request($criteria);
     $results = [];
     foreach ($iterator as $data) {
         $results[] = $data;
     }
 
-    // Manual count to be safe with different DB versions
-    $count_criteria = [
-        'SELECT' => ['COUNT(*) as cpt'],
-        'FROM' => $table,
-        'WHERE' => [
-            'is_active' => 1
-        ]
-    ];
-    if (!empty($searchText)) {
-        $count_criteria['WHERE']['name'] = ['LIKE', '%' . $searchText . '%'];
-    }
-
-    $count_iterator = $DB->request($count_criteria);
-    $total_count = 0;
-    if ($count_row = $count_iterator->current()) {
-        $total_count = $count_row['cpt'];
-    }
-
+    $total_count = countElementsInTable($table, $where);
     $has_more = ($page * $page_limit) < $total_count;
 
     echo json_encode([
         'results' => $results,
-        'pagination' => ['more' => $has_more]
+        'pagination' => ['more' => $has_more],
+        'debug' => [
+            'where' => $where,
+            'count' => $total_count,
+            'query' => $query
+        ]
     ]);
 
 } catch (\Throwable $e) {
@@ -91,6 +124,6 @@ try {
         'error' => $e->getMessage(),
         'file' => $e->getFile(),
         'line' => $e->getLine(),
-        'trace' => $e->getTraceAsString()
+        'trace' => explode("\n", $e->getTraceAsString())
     ]);
 }

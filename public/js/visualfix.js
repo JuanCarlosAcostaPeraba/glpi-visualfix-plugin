@@ -124,12 +124,14 @@ const addTagsFilterToToolbar = () => {
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
+                    console.log('VisualFix: Tag search request with term:', params.term);
                     return {
-                        searchText: params.term,
+                        searchText: params.term || '',
                         page: params.page
                     };
                 },
                 processResults: function (data, params) {
+                    console.log('VisualFix: Tag search results received:', data);
                     params.page = params.page || 1;
                     return {
                         results: data.results,
@@ -137,6 +139,20 @@ const addTagsFilterToToolbar = () => {
                             more: (data.pagination && data.pagination.more) ? true : false
                         }
                     };
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('VisualFix: Tag AJAX error!', {
+                        status: jqXHR.status,
+                        statusText: textStatus,
+                        error: errorThrown,
+                        responseText: jqXHR.responseText
+                    });
+                    try {
+                        const json = JSON.parse(jqXHR.responseText);
+                        console.error('VisualFix: Parsed server error:', json);
+                    } catch (e) {
+                        console.error('VisualFix: Could not parse error response as JSON');
+                    }
                 },
                 cache: true
             }
