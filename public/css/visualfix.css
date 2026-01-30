@@ -40,6 +40,21 @@
     flex: 0 0 auto !important;
 }
 
+/* Tags filter container */
+.visualfix-tags-filter {
+    flex: 0 1 250px !important;
+    min-width: 150px !important;
+}
+
+.visualfix-tags-filter .select2-container--default .select2-selection--multiple {
+    border-color: var(--bs-border-color);
+    min-height: 34px;
+}
+
+.visualfix-tags-filter .select2-container .select2-search--inline .select2-search__field {
+    margin-top: 5px;
+}
+
 /* Fix pagination bar overlapping filters 
    Reduce z-index so it stays behind dropdowns and filter panels
 */
