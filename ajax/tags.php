@@ -90,7 +90,7 @@ try {
     }
 
     $query = [
-        'SELECT' => ['id', 'name as text'],
+        'SELECT' => ['id', 'name as text', 'color'],
         'FROM' => $table,
         'WHERE' => $where,
         'ORDER' => 'name ASC',
