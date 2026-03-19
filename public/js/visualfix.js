@@ -207,8 +207,35 @@ const observer = new MutationObserver((mutations) => {
         repairBrokenTokens();
         addTagsFilterToToolbar();
         applyManualTagFilter();
+        fixProjectNotes();
     }
 });
+
+/**
+ * Project Notes Preview Fix
+ * Shows the first few lines of a note in the accordion header.
+ */
+const fixProjectNotes = () => {
+    // Target only accordions within Notepad tabs to avoid affecting other features
+    const accordionItems = document.querySelectorAll('div[id^="tab-Notepad_"] .accordion-item');
+    accordionItems.forEach(item => {
+        const button = item.querySelector('.accordion-button');
+        const contentContainer = item.querySelector('.rich_text_container');
+
+        if (!button || !contentContainer || button.querySelector('.visualfix-note-preview')) return;
+
+        // Extract text and clean it up
+        let text = contentContainer.innerText || contentContainer.textContent;
+        text = text.replace(/\s+/g, ' ').trim();
+
+        if (text.length > 0) {
+            const preview = document.createElement('span');
+            preview.className = 'visualfix-note-preview';
+            preview.textContent = ' - ' + (text.length > 100 ? text.substring(0, 100) + '...' : text);
+            button.appendChild(preview);
+        }
+    });
+};
 
 observer.observe(document.body, { childList: true, subtree: true });
 
@@ -216,4 +243,5 @@ document.addEventListener('DOMContentLoaded', () => {
     fixSuggestions();
     repairBrokenTokens();
     addTagsFilterToToolbar();
+    fixProjectNotes();
 });

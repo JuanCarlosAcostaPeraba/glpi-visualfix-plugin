@@ -76,3 +76,28 @@
     position: relative;
     z-index: 1;
 }
+
+/* Project Notes Preview */
+.visualfix-note-preview {
+    color: var(--bs-secondary-color, #6e7687);
+    font-size: 0.85rem;
+    font-weight: normal;
+    margin-left: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    max-width: 60%;
+    vertical-align: middle;
+}
+
+/* Ensure the button content is layout correctly for the preview */
+.accordion-button {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.accordion-button span:first-child {
+    flex-shrink: 0;
+}
