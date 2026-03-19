@@ -31,7 +31,7 @@ function plugin_version_visualfix()
    return [
       'name' => 'Visual Fix',
       'version' => '1.2.2',
-      'author' => 'Juan Carlos Acosta Peraba',
+      'author' => 'Juan Carlos Acosta Perabá',
       'license' => 'GPLv2+',
       'homepage' => 'https://github.com/JuanCarlosAcostaPeraba/glpi-visualfix-plugin',
       'requirements' => [
